@@ -26,12 +26,13 @@ export default function LoginModal({ isOpen, onClose }) {
 
       const normalizedEmail = user.email.trim().toLowerCase();
 
-      // Make email available to Adobe Tags data elements
+      // make email available to Tags data elements
       window.adobeLoginEmail = normalizedEmail;
 
-      // Fire a custom browser event that Adobe Tags can listen to
-      window.dispatchEvent(
+      // fire browser event for Tags rule
+      document.dispatchEvent(
         new CustomEvent("google-login-success", {
+          bubbles: true,
           detail: {
             email: normalizedEmail,
             provider: "google"
@@ -60,7 +61,7 @@ export default function LoginModal({ isOpen, onClose }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 9999,
+        zIndex: 9999
       }}
     >
       <div
@@ -69,7 +70,7 @@ export default function LoginModal({ isOpen, onClose }) {
           padding: "24px",
           borderRadius: "12px",
           minWidth: "320px",
-          boxShadow: "0 12px 40px rgba(0,0,0,0.2)",
+          boxShadow: "0 12px 40px rgba(0,0,0,0.2)"
         }}
       >
         <h2 style={{ marginTop: 0, marginBottom: "12px" }}>Sign in</h2>
@@ -89,7 +90,7 @@ export default function LoginModal({ isOpen, onClose }) {
             border: "none",
             color: "#666",
             cursor: loading ? "not-allowed" : "pointer",
-            fontSize: "14px",
+            fontSize: "14px"
           }}
         >
           Cancel
