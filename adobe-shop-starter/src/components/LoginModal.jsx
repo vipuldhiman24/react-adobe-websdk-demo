@@ -21,43 +21,27 @@ export default function LoginModal({ isOpen, onClose }) {
 
       if (!user?.email) {
         console.error("No user email found on Firebase user");
-        setLoading(false);
         return;
-      }
-
-      if (!window.alloy) {
-        console.error("window.alloy is not available");
-        setLoading(false);
-        return;
-      }
-
-      if (window.waitForAlloyReady) {
-        await window.waitForAlloyReady();
       }
 
       const normalizedEmail = user.email.trim().toLowerCase();
 
-      const response = await window.alloy("sendEvent", {
-        xdm: {
-          eventType: "user.login",
-          identityMap: {
-            GOOGLE_EMAIL: [
-              {
-                id: normalizedEmail,
-                authenticatedState: "authenticated",
-                primary : false
-              }
-            ]
-          }
-        },
-        data: {
-          debugEvent: "google-login",
-          loginProvider: "google",
-          googleEmail: normalizedEmail
-        }
-      });
+      // Make email available to Adobe Tags data elements
+      window.adobeLoginEmail = normalizedEmail;
 
-      console.log("Adobe identity sent successfully", response);
+      // Fire a custom browser event that Adobe Tags can listen to
+      window.dispatchEvent(
+        new CustomEvent("google-login-success", {
+          detail: {
+            email: normalizedEmail,
+            provider: "google"
+          }
+        })
+      );
+
+      console.log("Custom login event dispatched for Adobe Tags", {
+        email: normalizedEmail
+      });
 
       onClose?.();
     } catch (err) {
