@@ -1,45 +1,28 @@
-import {
-  signInWithPopup,
-} from "firebase/auth";
-
-import {
-  auth,
-  provider,
-} from "../firebase/firebase";
-
 import { FcGoogle } from "react-icons/fc";
 
-export default function LoginButton() {
-
-  const login = async () => {
-
-    try {
-
-      await signInWithPopup(
-        auth,
-        provider
-      );
-
-    } catch (err) {
-
-      console.log(err);
-
-    }
-  };
-
+export default function LoginButton({ onClick, loading = false }) {
   return (
-
     <button
-      onClick={login}
+      type="button"
+      onClick={onClick}
+      disabled={loading}
       className="google-btn"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        padding: "12px 18px",
+        background: "white",
+        color: "black",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        cursor: loading ? "not-allowed" : "pointer",
+        fontSize: "16px",
+        fontWeight: 500,
+      }}
     >
-
       <FcGoogle size={22} />
-
-      <span>
-        Continue with Google
-      </span>
-
+      <span>{loading ? "Signing in..." : "Continue with Google"}</span>
     </button>
   );
 }
