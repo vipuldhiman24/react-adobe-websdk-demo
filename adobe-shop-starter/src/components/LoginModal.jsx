@@ -28,14 +28,20 @@ export default function LoginModal({ isOpen, onClose }) {
 
 const normalizedEmail = user.email.trim().toLowerCase();
 
+console.log("STEP 1");
+
 window.adobeLoginEmail = normalizedEmail;
 
+console.log("STEP 2");
+
 console.log(
-  "window.adobeLoginEmail:",
+  "EMAIL STORED:",
   window.adobeLoginEmail
 );
 
 setTimeout(() => {
+  console.log("STEP 3");
+
   document.dispatchEvent(
     new CustomEvent("google-login-success", {
       bubbles: true,
@@ -46,9 +52,7 @@ setTimeout(() => {
     })
   );
 
-  console.log(
-    "Custom login event dispatched"
-  );
+  console.log("STEP 4");
 }, 100);
 
       console.log("Custom login event dispatched for Adobe Tags", {
