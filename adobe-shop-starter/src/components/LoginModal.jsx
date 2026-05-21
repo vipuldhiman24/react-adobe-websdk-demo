@@ -25,8 +25,6 @@ export default function LoginModal({
 
       setLoading(true);
 
-      console.log("Login started");
-
       const result =
         await signInWithPopup(
           auth,
@@ -36,11 +34,6 @@ export default function LoginModal({
       const user = result.user;
 
       if (!user?.email) {
-
-        console.error(
-          "No user email found"
-        );
-
         return;
       }
 
@@ -49,16 +42,9 @@ export default function LoginModal({
           .trim()
           .toLowerCase();
 
-      console.log(
-        "User logged in:",
-        normalizedEmail
-      );
-
-      // expose globally for Adobe Tags
       window.adobeLoginEmail =
         normalizedEmail;
 
-      // slight delay helps Tags
       setTimeout(() => {
 
         document.dispatchEvent(
@@ -76,20 +62,13 @@ export default function LoginModal({
           )
         );
 
-        console.log(
-          "Adobe login event dispatched"
-        );
-
       }, 100);
 
       onClose?.();
 
     } catch (err) {
 
-      console.error(
-        "Login Error:",
-        err
-      );
+      console.error(err);
 
     } finally {
 
@@ -120,19 +99,14 @@ export default function LoginModal({
         </h2>
 
         <p className="modal-text">
-          Continue with Google to
-          access your cart and send
-          your Adobe identity.
+          Continue with Google
+          to access your cart.
         </p>
 
-        <div
-          className="modal-google-btn"
-        >
-          <LoginButton
-            onClick={login}
-            loading={loading}
-          />
-        </div>
+        <LoginButton
+          onClick={login}
+          loading={loading}
+        />
 
       </div>
 
