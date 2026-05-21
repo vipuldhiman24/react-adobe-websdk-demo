@@ -7,9 +7,6 @@ import {
 } from "react-router-dom";
 
 export default function AdobeTracker() {
-    console.log(
-  "ADOBE TRACKER LOADED"
-);
 
   const location =
     useLocation();
@@ -18,70 +15,91 @@ export default function AdobeTracker() {
 
     async function trackView() {
 
-      try {
+      let retries = 0;
 
-        let viewName =
-          "home";
-
-        if (
-          location.pathname.includes(
-            "/product"
-          )
-        ) {
-
-          viewName =
-            "product-details";
-        }
-
-        if (
-          location.pathname.includes(
-            "/cart"
-          )
-        ) {
-
-          viewName = "cart";
-        }
+      while (
+        typeof window.alloy !==
+          "function" &&
+        retries < 40
+      ) {
 
         console.log(
-          "TRACKING VIEW:",
-          viewName
+          "Waiting for Alloy..."
         );
 
-        if (
-          typeof window.alloy !==
-          "function"
-        ) {
+        await new Promise(
+          (resolve) =>
+            setTimeout(resolve, 250)
+        );
 
-          console.log(
-            "Alloy missing"
-          );
+        retries++;
+      }
 
-          return;
-        }
+      if (
+        typeof window.alloy !==
+        "function"
+      ) {
 
-        await window.alloy(
-          "sendEvent",
-          {
-            renderDecisions: true,
+        console.error(
+          "Alloy never loaded"
+        );
 
-            xdm: {
-              web: {
-                webPageDetails: {
-                  viewName
+        return;
+      }
+
+      let viewName = "home";
+
+      if (
+        location.pathname.includes(
+          "/product"
+        )
+      ) {
+
+        viewName =
+          "product-details";
+      }
+
+      if (
+        location.pathname.includes(
+          "/cart"
+        )
+      ) {
+
+        viewName = "cart";
+      }
+
+      console.log(
+        "SENDING VIEW:",
+        viewName
+      );
+
+      try {
+
+        const result =
+          await window.alloy(
+            "sendEvent",
+            {
+              renderDecisions: true,
+
+              xdm: {
+                web: {
+                  webPageDetails: {
+                    viewName
+                  }
                 }
               }
             }
-          }
-        );
+          );
 
         console.log(
-          "VIEW SENT"
+          "VIEW SENT:",
+          result
         );
 
       } catch (err) {
 
         console.error(
-          "TRACK ERROR:",
+          "SEND EVENT ERROR:",
           err
         );
       }
