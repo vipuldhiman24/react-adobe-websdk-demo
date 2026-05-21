@@ -916,34 +916,7 @@ body {
 }
 
 .modal-google-btn {
-
   width: 100%;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 14px;
-
-  padding: 18px;
-
-  border: none;
-
-  border-radius: 20px;
-
-  background: white;
-
-  color: black;
-
-  font-size: 15px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.3s ease;
 }
 
 .modal-google-btn:hover {
