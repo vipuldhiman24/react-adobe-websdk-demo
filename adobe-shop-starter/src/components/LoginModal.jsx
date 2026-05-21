@@ -1,128 +1,141 @@
 import { useState } from "react";
+
 import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../firebase/firebase";
+
+import {
+  auth,
+  provider,
+} from "../firebase/firebase";
+
 import LoginButton from "./LoginButton";
 
-export default function LoginModal({ isOpen, onClose }) {
-  const [loading, setLoading] = useState(false);
+export default function LoginModal({
+  isOpen,
+  onClose,
+}) {
+
+  const [loading, setLoading] =
+    useState(false);
 
   if (!isOpen) return null;
 
   const login = async () => {
+
     try {
+
       setLoading(true);
 
       console.log("Login started");
 
-      const result = await signInWithPopup(auth, provider);
+      const result =
+        await signInWithPopup(
+          auth,
+          provider
+        );
+
       const user = result.user;
 
       if (!user?.email) {
-        console.error("No user email found");
+
+        console.error(
+          "No user email found"
+        );
+
         return;
       }
 
-      const normalizedEmail = user.email
-        .trim()
-        .toLowerCase();
+      const normalizedEmail =
+        user.email
+          .trim()
+          .toLowerCase();
 
       console.log(
         "User logged in:",
         normalizedEmail
       );
 
-      // expose email globally for Adobe Tags DE
-      window.adobeLoginEmail = normalizedEmail;
+      // expose globally for Adobe Tags
+      window.adobeLoginEmail =
+        normalizedEmail;
 
-      // small delay ensures Tags reads latest value
+      // slight delay helps Tags
       setTimeout(() => {
+
         document.dispatchEvent(
-          new CustomEvent("google-login-success", {
-            bubbles: true,
-            detail: {
-              email: normalizedEmail,
-              provider: "google"
+          new CustomEvent(
+            "google-login-success",
+            {
+              bubbles: true,
+              detail: {
+                email:
+                  normalizedEmail,
+                provider:
+                  "google"
+              }
             }
-          })
+          )
         );
 
         console.log(
           "Adobe login event dispatched"
         );
+
       }, 100);
 
       onClose?.();
 
     } catch (err) {
-      console.error("Login Error:", err);
+
+      console.error(
+        "Login Error:",
+        err
+      );
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.45)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9999
-      }}
-    >
-      <div
-        style={{
-          background: "white",
-          padding: "24px",
-          borderRadius: "12px",
-          minWidth: "320px",
-          boxShadow: "0 12px 40px rgba(0,0,0,0.2)"
-        }}
-      >
-        <h2
-          style={{
-            marginTop: 0,
-            marginBottom: "12px"
-          }}
-        >
-          Sign in
-        </h2>
 
-        <p
-          style={{
-            marginTop: 0,
-            marginBottom: "20px",
-            color: "#555"
-          }}
-        >
-          Continue with Google to log in and send your Adobe identity.
-        </p>
+    <div className="modal-overlay">
 
-        <LoginButton
-          onClick={login}
-          loading={loading}
-        />
+      <div className="login-modal">
 
         <button
-          type="button"
+          className="close-modal"
           onClick={onClose}
-          disabled={loading}
-          style={{
-            marginTop: "16px",
-            background: "transparent",
-            border: "none",
-            color: "#666",
-            cursor: loading
-              ? "not-allowed"
-              : "pointer",
-            fontSize: "14px"
-          }}
         >
-          Cancel
+          ✕
         </button>
+
+        <p className="modal-tag">
+          SECURE LOGIN
+        </p>
+
+        <h2>
+          Welcome Back
+        </h2>
+
+        <p className="modal-text">
+          Continue with Google to
+          access your cart and send
+          your Adobe identity.
+        </p>
+
+        <div
+          className="modal-google-btn"
+        >
+          <LoginButton
+            onClick={login}
+            loading={loading}
+          />
+        </div>
+
       </div>
+
     </div>
   );
 }
