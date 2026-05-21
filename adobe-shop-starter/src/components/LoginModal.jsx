@@ -34,6 +34,11 @@ export default function LoginModal({
       const user = result.user;
 
       if (!user?.email) {
+
+        console.error(
+          "No user email found"
+        );
+
         return;
       }
 
@@ -42,9 +47,16 @@ export default function LoginModal({
           .trim()
           .toLowerCase();
 
+      console.log(
+        "User logged in:",
+        normalizedEmail
+      );
+
+      // expose globally for Adobe Tags
       window.adobeLoginEmail =
         normalizedEmail;
 
+      // slight delay helps Tags
       setTimeout(() => {
 
         document.dispatchEvent(
@@ -62,13 +74,20 @@ export default function LoginModal({
           )
         );
 
+        console.log(
+          "Adobe login event dispatched"
+        );
+
       }, 100);
 
       onClose?.();
 
     } catch (err) {
 
-      console.error(err);
+      console.error(
+        "Login Error:",
+        err
+      );
 
     } finally {
 
@@ -99,8 +118,10 @@ export default function LoginModal({
         </h2>
 
         <p className="modal-text">
-          Continue with Google
-          to access your cart.
+          Continue with Google to
+          access your cart and save
+          your emotionally unstable
+          purchases.
         </p>
 
         <LoginButton

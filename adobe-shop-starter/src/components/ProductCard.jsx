@@ -68,7 +68,11 @@ export default function ProductCard({
 
     if (!user) {
 
-      openLoginModal();
+      console.log(
+        "Opening login modal"
+      );
+
+      openLoginModal?.();
 
       return;
     }
