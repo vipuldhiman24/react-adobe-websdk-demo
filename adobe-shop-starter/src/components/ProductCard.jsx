@@ -62,7 +62,9 @@ export default function ProductCard({
         item.id === product.id
     );
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
+
+    e.stopPropagation();
 
     if (!user) {
 
@@ -112,16 +114,25 @@ export default function ProductCard({
 
       {existingItem ? (
 
-        <div className="quantity-box">
+        <div
+          className="quantity-box"
+          onClick={(e) =>
+            e.stopPropagation()
+          }
+        >
 
           <button
-            onClick={() =>
+            onClick={(e) => {
+
+              e.stopPropagation();
+
               dispatch(
                 decreaseQuantity(
                   product.id
                 )
-              )
-            }
+              );
+
+            }}
           >
             −
           </button>
@@ -141,9 +152,10 @@ export default function ProductCard({
       ) : (
 
         <button
+          className="primary-btn"
           onClick={handleAddToCart}
         >
-          Add to Cart
+          Add To Cart
         </button>
 
       )}
