@@ -64,21 +64,19 @@ export default function ProductCard({
 
   const handleAddToCart = (e) => {
 
-    e.stopPropagation();
+  e.stopPropagation();
 
-    if (!user) {
+  if (!user) {
 
-      console.log(
-        "Opening login modal"
-      );
+    alert(
+      "Please login to access the cart."
+    );
 
-      openLoginModal?.();
+    return;
+  }
 
-      return;
-    }
-
-    dispatch(addToCart(product));
-  };
+  dispatch(addToCart(product));
+};
 
   return (
 

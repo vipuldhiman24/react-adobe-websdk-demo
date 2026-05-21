@@ -98,7 +98,10 @@ export default function LoginModal({
           Welcome Back
         </h2>
 
-      
+        <p className="modal-text">
+          Continue with Google to
+          access your cart.
+        </p>
 
         <LoginButton
           onClick={login}
