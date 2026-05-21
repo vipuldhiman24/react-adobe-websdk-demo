@@ -26,17 +26,29 @@ export default function LoginModal({ isOpen, onClose }) {
 
      const normalizedEmail = user.email.trim().toLowerCase();
 
-window._satellite?.setVar(
-  "googleEmail",
-  normalizedEmail
-);
+console.log("EMAIL:", normalizedEmail);
+
+console.log("window._satellite:", window._satellite);
+
+if (window._satellite) {
+  window._satellite.setVar(
+    "googleEmail",
+    normalizedEmail
+  );
+
+  console.log(
+    "Stored variable:",
+    window._satellite.getVar("googleEmail")
+  );
+} else {
+  console.error("_satellite missing");
+}
 
 document.dispatchEvent(
   new CustomEvent("google-login-success", {
     bubbles: true,
     detail: {
-      email: normalizedEmail,
-      provider: "google"
+      email: normalizedEmail
     }
   })
 );
