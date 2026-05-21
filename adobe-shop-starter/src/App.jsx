@@ -12,7 +12,7 @@ import CartPage
   from "./pages/CartPage";
 
 import AdobeTracker
-  from "./components/AdobeTracker";
+  from "./services/AdobeTracker";
 
 export default function App() {
 
