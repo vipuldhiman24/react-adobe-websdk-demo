@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { useEffect, useState } from "react";
+import AdobeTracker from "../services/AdobeTracker";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export default function Navbar() {
 
   return (
     <>
+    <AdobeTracker />
       <nav className="navbar">
         <div
           className="logo"
