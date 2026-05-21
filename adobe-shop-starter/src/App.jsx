@@ -23,42 +23,77 @@ export default function App() {
 
   useEffect(() => {
 
-    let viewName = "Home";
+    async function sendViewChange() {
 
-    if (
-      location.pathname.includes(
-        "/product"
-      )
-    ) {
+      try {
 
-      viewName =
-        "Product Details";
-    }
+        if (
+          typeof window.alloy !==
+          "function"
+        ) {
 
-    if (
-      location.pathname.includes(
-        "/cart"
-      )
-    ) {
+          console.log(
+            "Alloy not ready"
+          );
 
-      viewName = "Cart";
-    }
-
-    console.log(
-      "Adobe SPA View:",
-      viewName
-    );
-
-    document.dispatchEvent(
-      new CustomEvent(
-        "adobe-spa-view",
-        {
-          detail: {
-            viewName
-          }
+          return;
         }
-      )
-    );
+
+        let viewName = "home";
+
+        if (
+          location.pathname.includes(
+            "/product"
+          )
+        ) {
+
+          viewName =
+            "product-details";
+        }
+
+        if (
+          location.pathname.includes(
+            "/cart"
+          )
+        ) {
+
+          viewName = "cart";
+        }
+
+        console.log(
+          "Sending SPA view:",
+          viewName
+        );
+
+        await window.alloy(
+          "sendEvent",
+          {
+            renderDecisions: true,
+
+            xdm: {
+              web: {
+                webPageDetails: {
+                  viewName
+                }
+              }
+            }
+          }
+        );
+
+        console.log(
+          "SPA view sent successfully"
+        );
+
+      } catch (err) {
+
+        console.error(
+          "SPA view error:",
+          err
+        );
+      }
+    }
+
+    sendViewChange();
 
   }, [location.pathname]);
 
