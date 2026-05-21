@@ -1,22 +1,31 @@
-import { useDispatch, useSelector } from "react-redux";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  useParams,
+} from "react-router-dom";
+
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
 
 import {
   addToCart,
   decreaseQuantity,
 } from "../store/cartSlice";
 
-import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
-import { auth } from "../firebase/firebase";
+import api from "../services/api";
 
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
-export default function ProductCard({
-  product,
-  openLoginModal,
-}) {
+export default function ProductDetails() {
 
-  const navigate = useNavigate();
+  const { id } = useParams();
 
   const dispatch = useDispatch();
 
@@ -24,23 +33,31 @@ export default function ProductCard({
     (state) => state.cart.items
   );
 
-  const [user, setUser] =
+  const [product, setProduct] =
     useState(null);
 
   useEffect(() => {
 
-    const unsubscribe =
-      auth.onAuthStateChanged(
-        (currentUser) => {
+    api.get(`/products/${id}`)
+      .then((res) => {
 
-          setUser(currentUser);
+        setProduct(res.data);
 
-        }
+      })
+      .catch((err) =>
+        console.log(err)
       );
 
-    return () => unsubscribe();
+  }, [id]);
 
-  }, []);
+  if (!product) {
+
+    return (
+      <div className="loading">
+        Loading Product...
+      </div>
+    );
+  }
 
   const existingItem =
     cartItems.find(
@@ -48,59 +65,59 @@ export default function ProductCard({
         item.id === product.id
     );
 
-  const handleAddToCart = (e) => {
-
-    e.stopPropagation();
-
-    // NOT LOGGED IN
-    if (!user) {
-
-      openLoginModal?.();
-
-      return;
-    }
+  const handleAddToCart = () => {
 
     dispatch(addToCart(product));
   };
 
   return (
 
-    <div
-      className="product-card"
-      onClick={() =>
-        navigate(`/product/${product.id}`)
-      }
-    >
+    <div className="page">
 
-      <img
-        src={product.thumbnail}
-        alt={product.title}
-      />
+      <Navbar />
 
-      <div className="product-info">
+      <motion.div
+        className="pdp"
+        initial={{
+          opacity: 0,
+          y: 30,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+      >
 
-        <p className="product-category">
-          {product.category}
-        </p>
+        <div className="pdp-image">
 
-        <h3>
-          {product.title}
-        </h3>
+          <img
+            src={product.thumbnail}
+            alt={product.title}
+          />
 
-        <div className="product-bottom">
+        </div>
 
-          <span className="price">
+        <div className="pdp-content">
+
+          <p className="pdp-category">
+            {product.category}
+          </p>
+
+          <h1>
+            {product.title}
+          </h1>
+
+          <p className="pdp-description">
+            {product.description}
+          </p>
+
+          <div className="pdp-price">
             ${product.price}
-          </span>
+          </div>
 
           {existingItem ? (
 
-            <div
-              className="quantity-box"
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-            >
+            <div className="quantity-box">
 
               <button
                 onClick={() =>
@@ -139,7 +156,7 @@ export default function ProductCard({
 
         </div>
 
-      </div>
+      </motion.div>
 
     </div>
   );
