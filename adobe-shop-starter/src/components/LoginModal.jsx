@@ -24,7 +24,7 @@ export default function LoginModal({ isOpen, onClose }) {
         return;
       }
 
-     const normalizedEmail = user.email.trim().toLowerCase();
+    
 
 const normalizedEmail = user.email.trim().toLowerCase();
 
