@@ -660,4 +660,7 @@ body {
 
   transform: rotate(90deg);
 }
+#root > div > div:nth-child(4) {
+  display: none !important;
+}
 }
