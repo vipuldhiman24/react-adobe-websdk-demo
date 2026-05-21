@@ -7,6 +7,9 @@ import {
 } from "react-router-dom";
 
 export default function AdobeTracker() {
+    console.log(
+  "ADOBE TRACKER LOADED"
+);
 
   const location =
     useLocation();
