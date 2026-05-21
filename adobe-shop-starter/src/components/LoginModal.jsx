@@ -24,21 +24,22 @@ export default function LoginModal({ isOpen, onClose }) {
         return;
       }
 
-      const normalizedEmail = user.email.trim().toLowerCase();
+     const normalizedEmail = user.email.trim().toLowerCase();
 
-      // make email available to Tags data elements
-      window.adobeLoginEmail = normalizedEmail;
+window._satellite?.setVar(
+  "googleEmail",
+  normalizedEmail
+);
 
-      // fire browser event for Tags rule
-      document.dispatchEvent(
-        new CustomEvent("google-login-success", {
-          bubbles: true,
-          detail: {
-            email: normalizedEmail,
-            provider: "google"
-          }
-        })
-      );
+document.dispatchEvent(
+  new CustomEvent("google-login-success", {
+    bubbles: true,
+    detail: {
+      email: normalizedEmail,
+      provider: "google"
+    }
+  })
+);
 
       console.log("Custom login event dispatched for Adobe Tags", {
         email: normalizedEmail
