@@ -1,37 +1,22 @@
-import {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  useParams,
-} from "react-router-dom";
-
-import {
-  useDispatch,
-  useSelector,
-} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   addToCart,
   decreaseQuantity,
 } from "../store/cartSlice";
 
-import {
-  auth,
-} from "../firebase/firebase";
+import { useNavigate } from "react-router-dom";
 
-import Navbar from "../components/Navbar";
+import { auth } from "../firebase/firebase";
 
-import LoginModal from "../components/LoginModal";
+import { useEffect, useState } from "react";
 
-import api from "../services/api";
+export default function ProductCard({
+  product,
+  openLoginModal,
+}) {
 
-import { motion } from "framer-motion";
-
-export default function ProductDetails() {
-
-  const { id } = useParams();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -39,28 +24,8 @@ export default function ProductDetails() {
     (state) => state.cart.items
   );
 
-  const [product, setProduct] =
-    useState(null);
-
   const [user, setUser] =
     useState(null);
-
-  const [showModal, setShowModal] =
-    useState(false);
-
-  useEffect(() => {
-
-    api.get(`/products/${id}`)
-      .then((res) => {
-
-        setProduct(res.data);
-
-      })
-      .catch((err) =>
-        console.log(err)
-      );
-
-  }, [id]);
 
   useEffect(() => {
 
@@ -77,26 +42,20 @@ export default function ProductDetails() {
 
   }, []);
 
-  if (!product) {
-
-    return (
-      <div className="loading">
-        Loading Product...
-      </div>
-    );
-  }
-
   const existingItem =
     cartItems.find(
       (item) =>
         item.id === product.id
     );
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
 
+    e.stopPropagation();
+
+    // NOT LOGGED IN
     if (!user) {
 
-      setShowModal(true);
+      openLoginModal?.();
 
       return;
     }
@@ -106,52 +65,42 @@ export default function ProductDetails() {
 
   return (
 
-    <div className="page">
+    <div
+      className="product-card"
+      onClick={() =>
+        navigate(`/product/${product.id}`)
+      }
+    >
 
-      <Navbar />
+      <img
+        src={product.thumbnail}
+        alt={product.title}
+      />
 
-      <motion.div
-        className="pdp"
-        initial={{
-          opacity: 0,
-          y: 30,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-      >
+      <div className="product-info">
 
-        <div className="pdp-image">
+        <p className="product-category">
+          {product.category}
+        </p>
 
-          <img
-            src={product.thumbnail}
-            alt={product.title}
-          />
+        <h3>
+          {product.title}
+        </h3>
 
-        </div>
+        <div className="product-bottom">
 
-        <div className="pdp-content">
-
-          <p className="pdp-category">
-            {product.category}
-          </p>
-
-          <h1>
-            {product.title}
-          </h1>
-
-          <p className="pdp-description">
-            {product.description}
-          </p>
-
-          <div className="pdp-price">
+          <span className="price">
             ${product.price}
-          </div>
+          </span>
 
           {existingItem ? (
 
-            <div className="quantity-box">
+            <div
+              className="quantity-box"
+              onClick={(e) =>
+                e.stopPropagation()
+              }
+            >
 
               <button
                 onClick={() =>
@@ -190,14 +139,7 @@ export default function ProductDetails() {
 
         </div>
 
-      </motion.div>
-
-      <LoginModal
-        isOpen={showModal}
-        onClose={() =>
-          setShowModal(false)
-        }
-      />
+      </div>
 
     </div>
   );
