@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { createPortal } from "react-dom";
+
 import { signInWithPopup } from "firebase/auth";
 
 import {
@@ -33,30 +35,16 @@ export default function LoginModal({
 
       const user = result.user;
 
-      if (!user?.email) {
-
-        console.error(
-          "No user email found"
-        );
-
-        return;
-      }
+      if (!user?.email) return;
 
       const normalizedEmail =
         user.email
           .trim()
           .toLowerCase();
 
-      console.log(
-        "User logged in:",
-        normalizedEmail
-      );
-
-      // expose globally for Adobe Tags
       window.adobeLoginEmail =
         normalizedEmail;
 
-      // slight delay helps Tags
       setTimeout(() => {
 
         document.dispatchEvent(
@@ -74,20 +62,13 @@ export default function LoginModal({
           )
         );
 
-        console.log(
-          "Adobe login event dispatched"
-        );
-
       }, 100);
 
       onClose?.();
 
     } catch (err) {
 
-      console.error(
-        "Login Error:",
-        err
-      );
+      console.error(err);
 
     } finally {
 
@@ -96,7 +77,7 @@ export default function LoginModal({
     }
   };
 
-  return (
+  return createPortal(
 
     <div className="modal-overlay">
 
@@ -119,9 +100,7 @@ export default function LoginModal({
 
         <p className="modal-text">
           Continue with Google to
-          access your cart and save
-          your emotionally unstable
-          purchases.
+          access your cart.
         </p>
 
         <LoginButton
@@ -131,6 +110,8 @@ export default function LoginModal({
 
       </div>
 
-    </div>
+    </div>,
+
+    document.body
   );
 }

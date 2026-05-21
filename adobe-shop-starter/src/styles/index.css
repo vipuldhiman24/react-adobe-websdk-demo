@@ -552,4 +552,112 @@ body {
   .login-modal h2 {
     font-size: 36px;
   }
+
+
+
+  .modal-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background:
+    rgba(0,0,0,0.72);
+
+  backdrop-filter: blur(10px);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999999999;
+}
+
+.login-modal {
+
+  width: 92%;
+  max-width: 500px;
+
+  padding: 50px 40px;
+
+  border-radius: 30px;
+
+  background:
+    rgba(18,18,18,0.92);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.45);
+
+  position: relative;
+
+  text-align: center;
+}
+
+.modal-tag {
+
+  color: #777;
+
+  font-size: 12px;
+
+  letter-spacing: 4px;
+
+  margin-bottom: 20px;
+}
+
+.login-modal h2 {
+
+  font-size: 46px;
+
+  margin-bottom: 18px;
+}
+
+.modal-text {
+
+  color: #aaa;
+
+  line-height: 1.7;
+
+  margin-bottom: 36px;
+}
+
+.close-modal {
+
+  position: absolute;
+
+  top: 16px;
+  right: 16px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  background:
+    rgba(255,255,255,0.08);
+
+  color: white;
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  transition: 0.3s ease;
+}
+
+.close-modal:hover {
+
+  background:
+    rgba(255,255,255,0.14);
+
+  transform: rotate(90deg);
+}
 }
