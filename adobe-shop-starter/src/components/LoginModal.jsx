@@ -26,32 +26,30 @@ export default function LoginModal({ isOpen, onClose }) {
 
      const normalizedEmail = user.email.trim().toLowerCase();
 
-console.log("EMAIL:", normalizedEmail);
+const normalizedEmail = user.email.trim().toLowerCase();
 
-console.log("window._satellite:", window._satellite);
+window.adobeLoginEmail = normalizedEmail;
 
-if (window._satellite) {
-  window._satellite.setVar(
-    "googleEmail",
-    normalizedEmail
+console.log(
+  "window.adobeLoginEmail:",
+  window.adobeLoginEmail
+);
+
+setTimeout(() => {
+  document.dispatchEvent(
+    new CustomEvent("google-login-success", {
+      bubbles: true,
+      detail: {
+        email: normalizedEmail,
+        provider: "google"
+      }
+    })
   );
 
   console.log(
-    "Stored variable:",
-    window._satellite.getVar("googleEmail")
+    "Custom login event dispatched"
   );
-} else {
-  console.error("_satellite missing");
-}
-
-document.dispatchEvent(
-  new CustomEvent("google-login-success", {
-    bubbles: true,
-    detail: {
-      email: normalizedEmail
-    }
-  })
-);
+}, 100);
 
       console.log("Custom login event dispatched for Adobe Tags", {
         email: normalizedEmail
