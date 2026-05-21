@@ -11,55 +11,48 @@ export default function LoginModal({ isOpen, onClose }) {
   const login = async () => {
     try {
       setLoading(true);
+
       console.log("Login started");
 
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      console.log("Google login completed successfully");
-      console.log("Firebase user email:", user?.email);
-
       if (!user?.email) {
-        console.error("No user email found on Firebase user");
+        console.error("No user email found");
         return;
       }
 
-    
+      const normalizedEmail = user.email
+        .trim()
+        .toLowerCase();
 
-const normalizedEmail = user.email.trim().toLowerCase();
+      console.log(
+        "User logged in:",
+        normalizedEmail
+      );
 
-console.log("STEP 1");
+      // expose email globally for Adobe Tags DE
+      window.adobeLoginEmail = normalizedEmail;
 
-window.adobeLoginEmail = normalizedEmail;
+      // small delay ensures Tags reads latest value
+      setTimeout(() => {
+        document.dispatchEvent(
+          new CustomEvent("google-login-success", {
+            bubbles: true,
+            detail: {
+              email: normalizedEmail,
+              provider: "google"
+            }
+          })
+        );
 
-console.log("STEP 2");
-
-console.log(
-  "EMAIL STORED:",
-  window.adobeLoginEmail
-);
-
-setTimeout(() => {
-  console.log("STEP 3");
-
-  document.dispatchEvent(
-    new CustomEvent("google-login-success", {
-      bubbles: true,
-      detail: {
-        email: normalizedEmail,
-        provider: "google"
-      }
-    })
-  );
-
-  console.log("STEP 4");
-}, 100);
-
-      console.log("Custom login event dispatched for Adobe Tags", {
-        email: normalizedEmail
-      });
+        console.log(
+          "Adobe login event dispatched"
+        );
+      }, 100);
 
       onClose?.();
+
     } catch (err) {
       console.error("Login Error:", err);
     } finally {
@@ -88,12 +81,29 @@ setTimeout(() => {
           boxShadow: "0 12px 40px rgba(0,0,0,0.2)"
         }}
       >
-        <h2 style={{ marginTop: 0, marginBottom: "12px" }}>Sign in</h2>
-        <p style={{ marginTop: 0, marginBottom: "20px", color: "#555" }}>
+        <h2
+          style={{
+            marginTop: 0,
+            marginBottom: "12px"
+          }}
+        >
+          Sign in
+        </h2>
+
+        <p
+          style={{
+            marginTop: 0,
+            marginBottom: "20px",
+            color: "#555"
+          }}
+        >
           Continue with Google to log in and send your Adobe identity.
         </p>
 
-        <LoginButton onClick={login} loading={loading} />
+        <LoginButton
+          onClick={login}
+          loading={loading}
+        />
 
         <button
           type="button"
@@ -104,7 +114,9 @@ setTimeout(() => {
             background: "transparent",
             border: "none",
             color: "#666",
-            cursor: loading ? "not-allowed" : "pointer",
+            cursor: loading
+              ? "not-allowed"
+              : "pointer",
             fontSize: "14px"
           }}
         >
